@@ -71,7 +71,8 @@ class Sha256 {
 			0x510E527F,0x9B05688C,0x1F83D9AB,0x5BE0CD19
 		].__a);
 
-		var W = new Vector<Int>(64);
+		// var W = new Vector<Int>(64);
+		Devector.init(W, 64);
 		var a:Int,b:Int,c:Int,d:Int,e:Int,f:Int,g:Int,h:Int;
 		var T1, T2;
 		m[l >> 5] |= 0x80 << (24 - l % 32);
@@ -79,18 +80,20 @@ class Sha256 {
 		var i : Int = 0;
 		while ( i < m.length ) {
 			a = HASH[0]; b = HASH[1]; c = HASH[2]; d = HASH[3]; e = HASH[4]; f = HASH[5]; g = HASH[6]; h = HASH[7];
-			for ( j in 0...16 ) {
-				W[j] = m[j + i];
-				T1 = safeAdd(safeAdd(safeAdd(safeAdd(h, Sigma1256(e)), Ch(e, f, g)), K[j]), W[j]);
-				T2 = safeAdd(Sigma0256(a), Maj(a, b, c));
-				h = g; g = f; f = e; e = safeAdd(d, T1); d = c; c = b; b = a; a = safeAdd(T1, T2);
-			}
-			for ( j in 16...64 ) {
-				W[j] = safeAdd(safeAdd(safeAdd(Gamma1256(W[j - 2]), W[j - 7]), Gamma0256(W[j - 15])), W[j - 16]);
-				T1 = safeAdd(safeAdd(safeAdd(safeAdd(h, Sigma1256(e)), Ch(e, f, g)), K[j]), W[j]);
-				T2 = safeAdd(Sigma0256(a), Maj(a, b, c));
-				h = g; g = f; f = e; e = safeAdd(d, T1); d = c; c = b; b = a; a = safeAdd(T1, T2);
-			}
+			Devector.unroll(
+				for ( j in 0...16 ) {
+					W[j] = m[j + i];
+					T1 = safeAdd(safeAdd(safeAdd(safeAdd(h, Sigma1256(e)), Ch(e, f, g)), K[j]), W[j]);
+					T2 = safeAdd(Sigma0256(a), Maj(a, b, c));
+					h = g; g = f; f = e; e = safeAdd(d, T1); d = c; c = b; b = a; a = safeAdd(T1, T2);
+				}, W);
+			Devector.unroll(
+				for ( j in 16...64 ) {
+					W[j] = safeAdd(safeAdd(safeAdd(Gamma1256(W[j - 2]), W[j - 7]), Gamma0256(W[j - 15])), W[j - 16]);
+					T1 = safeAdd(safeAdd(safeAdd(safeAdd(h, Sigma1256(e)), Ch(e, f, g)), K[j]), W[j]);
+					T2 = safeAdd(Sigma0256(a), Maj(a, b, c));
+					h = g; g = f; f = e; e = safeAdd(d, T1); d = c; c = b; b = a; a = safeAdd(T1, T2);
+				}, W);
 			HASH[0] = safeAdd(a, HASH[0]);
 			HASH[1] = safeAdd(b, HASH[1]);
 			HASH[2] = safeAdd(c, HASH[2]);

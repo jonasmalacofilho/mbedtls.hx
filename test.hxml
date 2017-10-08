@@ -10,3 +10,6 @@
 -lib instrument
 --macro instrument.TimeCalls.hijack("fast.Sha256")
 
+-D eval-stack
+-D dump=pretty
+
