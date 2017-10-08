@@ -48,16 +48,18 @@ class Main {
 			utest.ui.Report.create(runner);
 
 			runner.run();
-		case [path]:
-			var bytes = sys.io.File.getBytes(path);
-			var ti = Sys.time();
-			var h = fast.Sha256.make(bytes);
-			var tf = Sys.time();
-			Sys.stderr().writeString('Took ${Math.round(1e3*(tf - ti))}ms\n');
-			Sys.stdout().writeString('${h.toHex()}  $path');
+		case args if (args[0] == "sha256sum" && args.length > 1):
+			for (path in args.slice(1)) {
+				var bytes = sys.io.File.getBytes(path);
+				var h = mbedtls.Sha256.make(bytes);
+				Sys.stdout().writeString('${h.toHex()}  $path\n');
+			}
 #if instrument
 			Sys.stderr().writeString(printTimers());
 #end
+		case other:
+			Sys.stderr().writeString('Usage:\n  test.n\n  test.n sha256sum <path> [<path>...]\n');
+			Sys.exit(1);
 		}
 
 	}

@@ -1,12 +1,11 @@
--cp lib
+-lib mbedtls
 
 -lib utest
 -cp test
 -main Main
 
 -neko test.n
--cmd neko test.n
 
 -lib instrument
---macro instrument.TimeCalls.hijack("fast.Sha256")
+--macro instrument.TimeCalls.hijack("mbedtls.Sha256")
 
