@@ -13,6 +13,7 @@ class TestSha256 {
 				Sha256.encode("The quick brown fox jumps over the lazy dog"));
 	}
 
+	// https://www.di-mgt.com.au/sha_testvectors.html
 	public function testMoreVectors()
 	{
 		Assert.equals("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
@@ -25,6 +26,7 @@ class TestSha256 {
 				Sha256.encode([for (i in 0...1000000) "a"].join("")));
 	}
 
+	// https://www.cosic.esat.kuleuven.be/nessie/testvectors/hash/sha/
 	public function testZeroBytes()
 	{
 		function zeros(n:Int) {

@@ -4,9 +4,9 @@
     "license"      :  "BSD",
     "tags"         :  ["neko"],
     "description"  :  "CFFI wrappers to the awesome mbed TLS",
-    "version"      :  "0.0.2",
+    "version"      :  "0.0.3",
     "classPath"    :  "lib",
-    "releasenote"  :  "Build and packaging organized",
+    "releasenote"  :  "Complete the entire SHA-2 family",
     "contributors" :  ["jonasmalacofilho", "protocubo"],
     "dependencies" :  {}
 }
