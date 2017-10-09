@@ -7,6 +7,8 @@
 -neko test.n
 
 -lib instrument
+--macro instrument.TimeCalls.hijack("mbedtls.Md5")
+--macro instrument.TimeCalls.hijack("mbedtls.Sha1")
 --macro instrument.TimeCalls.hijack("mbedtls.Sha224")
 --macro instrument.TimeCalls.hijack("mbedtls.Sha256")
 --macro instrument.TimeCalls.hijack("mbedtls.Sha384")

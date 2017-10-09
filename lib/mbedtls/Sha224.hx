@@ -3,8 +3,8 @@ package mbedtls;
 import haxe.io.BytesData;
 import haxe.io.Bytes;
 
-/**
-    Creates a Sha224 of a String.
+/*
+SHA-224 Cryptographic Hash Function
 */
 class Sha224 {
 	public static function encode(s:String):String

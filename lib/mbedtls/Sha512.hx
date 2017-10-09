@@ -3,11 +3,12 @@ package mbedtls;
 import haxe.io.BytesData;
 import haxe.io.Bytes;
 
-/**
-    Creates a Sha512 of a String.
+/*
+SHA-512 Cryptographic Hash Function
 */
+@:allow(mbedtls.Sha384)
 class Sha512 {
-	public static var _make(get,null):BytesData->Bool->BytesData;
+	static var _make(get,null):BytesData->Bool->BytesData;
 		static inline function get__make()
 		{
 			if (_make == null)

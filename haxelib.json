@@ -3,10 +3,10 @@
     "url"          :  "",
     "license"      :  "BSD",
     "tags"         :  ["neko"],
-    "description"  :  "CFFI wrappers to the awesome mbed TLS",
-    "version"      :  "0.0.3",
+    "description"  :  "CFFI to the awesome mbed TLS",
+    "version"      :  "0.0.4",
     "classPath"    :  "lib",
-    "releasenote"  :  "Complete the entire SHA-2 family",
+    "releasenote"  :  "Add MD5 and SHA-1",
     "contributors" :  ["jonasmalacofilho", "protocubo"],
     "dependencies" :  {}
 }

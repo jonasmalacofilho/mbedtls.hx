@@ -40,6 +40,8 @@ class Main {
 		switch Sys.args() {
 		case []:
 			var runner = new utest.Runner();
+			runner.addCase(new TestMd5());
+			runner.addCase(new TestSha1());
 			runner.addCase(new TestSha224());
 			runner.addCase(new TestSha256());
 			runner.addCase(new TestSha384());
