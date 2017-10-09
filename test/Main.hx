@@ -1,3 +1,5 @@
+using StringTools;
+
 class Main {
 #if instrument
 	static var timers:Map<String,{ count:Int, time:Float }>;
@@ -53,11 +55,17 @@ class Main {
 			utest.ui.Report.create(runner);
 
 			runner.run();
-		case args if (args[0] == "sha256sum" && args.length > 1):
+		case args if (args[0].endsWith("sum") && args.length > 1):
+			var algo = args[0].substr(0, args[0].indexOf("sum"));
+			var Impl:{ make:haxe.io.Bytes->haxe.io.Bytes } = cast Type.resolveClass('mbedtls.${algo.charAt(0).toUpperCase()}${algo.substr(1)}');
+			if (Impl == null) {
+				Sys.stderr().writeString('Could not find suitable implementation for $algo');
+				Sys.exit(1);
+			}
 			for (path in args.slice(1)) {
 				var bytes = sys.io.File.getBytes(path);
-				var h = mbedtls.Sha256.make(bytes);
-				Sys.stdout().writeString('${h.toHex()}  $path\n');
+				var hash = Impl.make(bytes);
+				Sys.stdout().writeString('${hash.toHex()}  $path\n');
 			}
 #if instrument
 			Sys.stderr().writeString(printTimers());
