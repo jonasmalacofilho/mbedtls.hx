@@ -1,12 +1,12 @@
 {
-    "name"         :  "mbedtsl",
+    "name"         :  "mbedtls",
     "url"          :  "",
     "license"      :  "BSD",
     "tags"         :  ["neko"],
     "description"  :  "CFFI wrappers to the awesome mbed TLS",
-    "version"      :  "0.0.1",
+    "version"      :  "0.0.2",
     "classPath"    :  "lib",
-    "releasenote"  :  "First things first: a haxe.crypto compatible, but fast, SHA-256 hash function",
+    "releasenote"  :  "Build and packaging organized",
     "contributors" :  ["jonasmalacofilho", "protocubo"],
     "dependencies" :  {}
 }
