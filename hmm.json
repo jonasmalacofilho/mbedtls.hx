@@ -1,0 +1,16 @@
+{
+  "dependencies": [
+    {
+      "name": "instrument",
+      "type": "git",
+      "dir": null,
+      "ref": "master",
+      "url": "https://github.com/protocubo/instrument.hx"
+    },
+    {
+      "name": "utest",
+      "type": "haxelib",
+      "version": null
+    }
+  ]
+}
