@@ -20,7 +20,7 @@ ndll/Linux64/$(LIB_NAME).ndll: src/$(LIB_NAME).c
 
 $(LIB_NAME).zip: all
 	rm -f $@
-	zip -r $@ ./* -x \*.zip
+	zip -r $@ ./* -x '*.zip' -x '**/.*'
 
 set-pkg: $(LIB_NAME).zip
 	haxelib remove $(LIB_NAME)
