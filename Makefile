@@ -2,7 +2,7 @@ LIB_NAME=mbedtls
 CFLAGS=-fPIC
 LDFLAGS=-lmbedtls
 
-all: ndll/Linux64/$(LIB_NAME).ndll ALWAYS
+all: ndll/Linux64/$(LIB_NAME).ndll test.n ALWAYS
 
 unit-test: test.n ALWAYS
 	neko test.n
