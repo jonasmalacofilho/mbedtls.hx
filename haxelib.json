@@ -4,9 +4,9 @@
     "license"      :  "BSD",
     "tags"         :  ["neko"],
     "description"  :  "CFFI to the awesome mbed TLS",
-    "version"      :  "0.0.4",
+    "version"      :  "0.0.5",
     "classPath"    :  "lib",
-    "releasenote"  :  "Add MD5 and SHA-1",
+    "releasenote"  :  "Lazy load all primitives",
     "contributors" :  ["jonasmalacofilho", "protocubo"],
     "dependencies" :  {}
 }
