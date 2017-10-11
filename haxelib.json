@@ -4,7 +4,7 @@
     "license"      :  "BSD",
     "tags"         :  ["neko"],
     "description"  :  "CFFI to the awesome mbed TLS",
-    "version"      :  "0.0.6",
+    "version"      :  "0.0.7",
     "classPath"    :  "lib",
     "releasenote"  :  "Build both x86 and x64 Linux ndlls",
     "contributors" :  ["jonasmalacofilho", "protocubo"],
