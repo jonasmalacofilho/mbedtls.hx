@@ -1,12 +1,12 @@
 {
     "name"         :  "mbedtls",
-    "url"          :  "",
+    "url"          :  "https://github.com/jonasmalacofilho/mbedtls.hx",
     "license"      :  "BSD",
     "tags"         :  ["neko"],
-    "description"  :  "CFFI to the awesome mbed TLS",
-    "version"      :  "0.0.7",
+    "description"  :  "Partial/future CFFI to the awesome mbed TLS",
+    "version"      :  "0.0.8",
     "classPath"    :  "lib",
-    "releasenote"  :  "Build both x86 and x64 Linux ndlls",
+    "releasenote"  :  "Complete package metadata",
     "contributors" :  ["jonasmalacofilho", "protocubo"],
     "dependencies" :  {}
 }
