@@ -41,12 +41,11 @@ ndll/L%/$(LIB_NAME).ndll: src/$(LIB_NAME).c
 # packaging
 #
 
-make-dist: set-pkg unit-test ALWAYS
-
 # make a package with whatever ndlls have been built
-$(LIB_NAME).zip: ALWAYS
+package: ALWAYS
 	rm -f $@
 	zip -r $@ ./* -x '*.zip' -x '**/.*' -x '*.n'
+	make set-pkg unit-test
 
 #
 # cleaning
