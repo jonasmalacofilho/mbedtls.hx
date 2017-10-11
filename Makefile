@@ -2,7 +2,7 @@ LIB_NAME=mbedtls
 CFLAGS=-fPIC
 LDFLAGS=-lmbedtls
 
-all: ndll/Linux64/$(LIB_NAME).ndll set-dev test.n ALWAYS
+default: set-dev unit-test ALWAYS
 
 unit-test: test.n ALWAYS
 	neko test.n
@@ -10,17 +10,9 @@ unit-test: test.n ALWAYS
 test.n: ALWAYS
 	haxe test.hxml
 
-ndll/Linux/$(LIB_NAME).ndll: src/$(LIB_NAME).c
-	mkdir -p ndll/Linux
-	$(CC) $(CFLAGS) -m32 $^ -shared $(LDFLAGS) -o $@
-
-ndll/Linux64/$(LIB_NAME).ndll: src/$(LIB_NAME).c
-	mkdir -p ndll/Linux64
-	$(CC) $(CFLAGS) -m64 $^ -shared $(LDFLAGS) -o $@
-
-$(LIB_NAME).zip: all
-	rm -f $@
-	zip -r $@ ./* -x '*.zip' -x '**/.*' -x '*.n'
+#
+# development settings
+#
 
 set-pkg: $(LIB_NAME).zip
 	haxelib remove $(LIB_NAME)
@@ -36,13 +28,56 @@ set-live: ALWAYS
 	haxelib install $(LIB_NAME)
 	haxelib path $(LIB_NAME)
 
-prepare-dist: set-pkg unit-test ALWAYS
+#
+# ndlls
+#
+
+# linux
+ndll/L%/$(LIB_NAME).ndll: src/$(LIB_NAME).c
+	mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $^ -shared $(LDFLAGS) -o $@
+
+#
+# packaging
+#
+
+make-dist: set-pkg unit-test ALWAYS
+
+# make a package with whatever ndlls have been built
+$(LIB_NAME).zip: ALWAYS
+	rm -f $@
+	zip -r $@ ./* -x '*.zip' -x '**/.*' -x '*.n'
+
+#
+# cleaning
+#
 
 clean: ALWAYS
 	rm -rf ndll
 
 dist-clean: clean ALWAYS
-	rm -f *.zip
+	rm -f $(LIB_NAME).zip  # leave renamed packages behind
+
+#
+# cross compiling
+#
+
+dockcross-all: dockcross-linux-x64 dockcross-linux-x86 ALWAYS
+
+dockcross-linux-x%: ALWAYS
+	docs/$@ bash -c 'make __jessie-linux-x$*'
+
+#
+# DANGER ZONE
+#
+
+# linux builds on debian jessie (used by dockcross)
+__jessie-linux-x%: ALWAYS
+	ls -l /.dockerenv  # make sure we're inside a container
+	echo 'deb http://ftp.debian.org/debian jessie-backports main' | sudo tee /etc/apt/sources.list.d/jessie-backports.list >/dev/null
+	sudo apt-get -y update >/dev/null
+	sudo apt-get -y install -t jessie-backports neko-dev libmbedtls-dev:$(subst 86,i386,$(findstring 86,$*)) >/dev/null
+	make ndll/Linux$(subst 86,,$*)/$(LIB_NAME).ndll
 
 .PHONY: ALWAYS
 
