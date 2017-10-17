@@ -6,10 +6,5 @@ import haxe.io.Bytes;
 /*
 SHA-384 Cryptographic Hash Function
 */
-class Sha384 {
-	public static function encode(s:String):String
-		return Bytes.ofData(Sha512._make(BytesData.ofString(s), true)).toHex();
+class Sha384 extends mbedtls.build.GenericHash {}
 
-	public static function make(b:Bytes):Bytes
-		return Bytes.ofData(Sha512._make(b.getData(), true));
-}

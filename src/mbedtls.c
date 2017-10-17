@@ -4,97 +4,70 @@
 #include "mbedtls/sha256.h"
 #include "mbedtls/sha512.h"
 
-#define CFFI_HASH_INIT(HASH) \
-	DEFINE_KIND(k_ ## HASH); \
-	static value HASH ## _init() \
-	{ \
-		mbedtls_ ## HASH ## _context *ctx; \
-		ctx = (mbedtls_ ## HASH ## _context *)alloc(sizeof(mbedtls_ ## HASH ## _context)); \
-		mbedtls_ ## HASH ## _init(ctx); \
-		mbedtls_ ## HASH ## _starts(ctx); \
-		return alloc_abstract(k_ ## HASH, ctx); \
-	} \
-	DEFINE_PRIM(HASH ## _init, 0);
+#define VARIANT_ARG__md5
+#define VARIANT_ARG__sha1
+#define VARIANT_ARG__sha224   , true
+#define VARIANT_ARG__sha256   , false
+#define VARIANT_ARG__sha384   , true
+#define VARIANT_ARG__sha512   , false
+#define VARIANT_ARG(VARIANT)  VARIANT_ARG__##VARIANT
 
-#define CFFI_HASH_INITv(HASH, VARIANT) \
-	DEFINE_KIND(k_ ## HASH); \
-	static value HASH ## _init(value VARIANT) \
+#define CFFI_HASH_INIT(VARIANT, HASH) \
+	static value VARIANT##_init() \
 	{ \
-		mbedtls_ ## HASH ## _context *ctx; \
-		val_check(VARIANT, bool); \
-		ctx = (mbedtls_ ## HASH ## _context *)alloc(sizeof(mbedtls_ ## HASH ## _context)); \
-		mbedtls_ ## HASH ## _init(ctx); \
-		mbedtls_ ## HASH ## _starts(ctx, val_bool(VARIANT)); \
-		return alloc_abstract(k_ ## HASH, ctx); \
+		mbedtls_##HASH##_context *ctx; \
+		ctx = (mbedtls_##HASH##_context *)alloc(sizeof(mbedtls_##HASH##_context)); \
+		mbedtls_##HASH##_init(ctx); \
+		mbedtls_##HASH##_starts(ctx VARIANT_ARG(VARIANT)); \
+		return alloc_abstract(k_##VARIANT, ctx); \
 	} \
-	DEFINE_PRIM(HASH ## _init, 1);
+	DEFINE_PRIM(VARIANT##_init, 0);
 
-#define CFFI_HASH_UPDATE(HASH) \
-	static value HASH ## _update(value ctx, value s, value len) \
+#define CFFI_HASH_UPDATE(VARIANT, HASH) \
+	static value VARIANT##_update(value ctx, value s, value len) \
 	{ \
-		val_check_kind(ctx, k_ ## HASH); \
+		val_check_kind(ctx, k_##VARIANT); \
 		val_check(s, string); \
 		val_check(len, int); \
-		mbedtls_ ## HASH ## _update(val_data(ctx), val_string(s), val_int(len)); \
+		mbedtls_##HASH##_update(val_data(ctx), val_string(s), val_int(len)); \
 		return val_null; \
 	} \
-	DEFINE_PRIM(HASH ## _update, 3);
+	DEFINE_PRIM(VARIANT##_update, 3);
 
-#define CFFI_HASH_FINISH(HASH, OUTPUTSIZE) \
-	static value HASH ## _finish(value ctx) \
+#define CFFI_HASH_FINISH(VARIANT, HASH, OUTPUTSIZE) \
+	static value VARIANT##_finish(value ctx) \
 	{ \
 		value out; \
-		val_check_kind(ctx, k_ ## HASH); \
+		val_check_kind(ctx, k_##VARIANT); \
 		out = alloc_empty_string(OUTPUTSIZE); \
-		mbedtls_ ## HASH ## _finish(val_data(ctx), val_string(out)); \
+		mbedtls_##HASH##_finish(val_data(ctx), val_string(out)); \
 		val_kind(ctx) = NULL; \
 		return out; \
 	} \
-	DEFINE_PRIM(HASH ## _finish, 1);
+	DEFINE_PRIM(VARIANT##_finish, 1);
 
-#define CFFI_HASH_FINISHv(HASH, VARIANT, OUTPUTSIZE, VARIANTSIZE) \
-	static value HASH ## _finish(value ctx, value VARIANT) \
-	{ \
-		value out; \
-		val_check_kind(ctx, k_ ## HASH); \
-		val_check(VARIANT, bool); \
-		out = alloc_empty_string(val_bool(VARIANT) ? VARIANTSIZE : OUTPUTSIZE); \
-		mbedtls_ ## HASH ## _finish(val_data(ctx), val_string(out)); \
-		val_kind(ctx) = NULL; \
-		return out; \
-	} \
-	DEFINE_PRIM(HASH ## _finish, 2);
-
-#define CFFI_BUILD_HASH(HASH, OUTPUTSIZE) \
-	CFFI_HASH_INIT(HASH); \
-	CFFI_HASH_UPDATE(HASH); \
-	CFFI_HASH_FINISH(HASH, OUTPUTSIZE); \
-	static value HASH ## _make(value s) \
+#define CFFI_HASH_MAKE(VARIANT, HASH, OUTPUTSIZE) \
+	static value VARIANT##_make(value s) \
 	{ \
 		value out; \
 		val_check(s, string); \
 		out = alloc_empty_string(OUTPUTSIZE); \
-		mbedtls_ ## HASH(val_string(s), val_strlen(s), val_string(out)); \
+		mbedtls_##HASH(val_string(s), val_strlen(s), val_string(out) VARIANT_ARG(VARIANT)); \
 		return out; \
 	} \
-	DEFINE_PRIM(HASH ## _make, 1); \
+	DEFINE_PRIM(VARIANT##_make, 1); \
 
-#define CFFI_BUILD_HASHv(HASH, OUTPUTSIZE, VARIANT, VARIANTSIZE) \
-	CFFI_HASH_INITv(HASH, VARIANT); \
-	CFFI_HASH_UPDATE(HASH); \
-	static value HASH ## _make(value s, value VARIANT) \
-	{ \
-		value out; \
-		val_check(s, string); \
-		val_check(VARIANT, bool); \
-		out = alloc_empty_string(val_bool(VARIANT) ? VARIANTSIZE : OUTPUTSIZE); \
-		mbedtls_ ## HASH(val_string(s), val_strlen(s), val_string(out), val_bool(VARIANT)); \
-		return out; \
-	} \
-	DEFINE_PRIM(HASH ## _make, 2); \
+#define CFFI_HASH_BUILD(VARIANT, HASH, OUTPUTSIZE) \
+	DEFINE_KIND(k_##VARIANT); \
+	CFFI_HASH_INIT(VARIANT, HASH); \
+	CFFI_HASH_UPDATE(VARIANT, HASH); \
+	CFFI_HASH_FINISH(VARIANT, HASH, OUTPUTSIZE); \
+	CFFI_HASH_MAKE(VARIANT, HASH, OUTPUTSIZE);
 
-CFFI_BUILD_HASH(md5, 16);
-CFFI_BUILD_HASH(sha1, 20);
-CFFI_BUILD_HASHv(sha256, 32, is224, 28);
-CFFI_BUILD_HASHv(sha512, 64, is384, 48);
+CFFI_HASH_BUILD(md5, md5, 16);
+CFFI_HASH_BUILD(sha1, sha1, 20);
+CFFI_HASH_BUILD(sha224, sha256, 28);
+CFFI_HASH_BUILD(sha256, sha256, 32);
+CFFI_HASH_BUILD(sha384, sha512, 48);
+CFFI_HASH_BUILD(sha512, sha512, 64);
 

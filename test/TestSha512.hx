@@ -1,5 +1,6 @@
 import utest.Assert;
 
+import haxe.io.Bytes;
 import mbedtls.Sha512;
 
 class TestSha512 {
@@ -37,6 +38,17 @@ class TestSha512 {
 				Sha512.make(zeros(1)).toHex());
 		Assert.equals("5ea71dc6d0b4f57bf39aadd07c208c35f06cd2bac5fde210397f70de11d439c62ec1cdf3183758865fd387fcea0bada2f6c37a4a17851dd1d78fefe6f204ee54",
 				Sha512.make(zeros(2)).toHex());
+	}
+
+	public function testStreaming()
+	{
+		var text = "The quick brown fox jumps over the lazy dog";
+		var digest = new Sha512();
+		digest.update(Bytes.ofString(text), 17);
+		for (c in text.substr(17).split(""))
+			digest.update(Bytes.ofString(c), 1);
+		digest.update(Bytes.ofString(""), 0);
+		Assert.equals(Sha512.encode(text), digest.finish().toHex());
 	}
 }
 

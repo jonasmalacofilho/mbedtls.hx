@@ -1,5 +1,6 @@
 import utest.Assert;
 
+import haxe.io.Bytes;
 import mbedtls.Sha256;
 
 class TestSha256 {
@@ -43,6 +44,17 @@ class TestSha256 {
 				Sha256.make(zeros(1)).toHex());
 		Assert.equals("96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
 				Sha256.make(zeros(2)).toHex());
+	}
+
+	public function testStreaming()
+	{
+		var text = "The quick brown fox jumps over the lazy dog";
+		var digest = new Sha256();
+		digest.update(Bytes.ofString(text), 17);
+		for (c in text.substr(17).split(""))
+			digest.update(Bytes.ofString(c), 1);
+		digest.update(Bytes.ofString(""), 0);
+		Assert.equals(Sha256.encode(text), digest.finish().toHex());
 	}
 }
 

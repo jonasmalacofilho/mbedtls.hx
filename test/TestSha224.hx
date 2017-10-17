@@ -1,5 +1,6 @@
 import utest.Assert;
 
+import haxe.io.Bytes;
 import mbedtls.Sha224;
 
 class TestSha224 {
@@ -39,6 +40,17 @@ class TestSha224 {
 		}
 		Assert.equals("d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f",
 				Sha224.make(zeros(0)).toHex());
+	}
+
+	public function testStreaming()
+	{
+		var text = "The quick brown fox jumps over the lazy dog";
+		var digest = new Sha224();
+		digest.update(Bytes.ofString(text), 17);
+		for (c in text.substr(17).split(""))
+			digest.update(Bytes.ofString(c), 1);
+		digest.update(Bytes.ofString(""), 0);
+		Assert.equals(Sha224.encode(text), digest.finish().toHex());
 	}
 }
 
