@@ -4,45 +4,28 @@
 #include "mbedtls/sha256.h"
 #include "mbedtls/sha512.h"
 
-value md5_make(value s)
-{
-	val_check(s, string);
-	value out = alloc_empty_string(16);
-	mbedtls_md5(val_string(s), val_strlen(s), val_string(out));
-	return out;
-}
+#define CFFI_HASH_MAKE1(HASH, OUTPUTSIZE) \
+	static value HASH ## _make(value s) \
+	{ \
+		val_check(s, string); \
+		value out = alloc_empty_string(OUTPUTSIZE); \
+		mbedtls_ ## HASH(val_string(s), val_strlen(s), val_string(out)); \
+		return out; \
+	} \
+	DEFINE_PRIM(HASH ## _make, 1); \
 
-DEFINE_PRIM(md5_make, 1);
+#define CFFI_HASH_MAKE2(HASH, OUTPUTSIZE, VARIANT, VARIANTSIZE) \
+	static value HASH ## _make(value s, value VARIANT) \
+	{ \
+		val_check(s, string); \
+		value out = alloc_empty_string(val_bool(VARIANT) ? VARIANTSIZE : OUTPUTSIZE); \
+		mbedtls_ ## HASH(val_string(s), val_strlen(s), val_string(out), val_bool(VARIANT)); \
+		return out; \
+	} \
+	DEFINE_PRIM(HASH ## _make, 2); \
 
-value sha1_make(value s)
-{
-	val_check(s, string);
-	value out = alloc_empty_string(20);
-	mbedtls_sha1(val_string(s), val_strlen(s), val_string(out));
-	return out;
-}
-
-DEFINE_PRIM(sha1_make, 1);
-
-value sha256_make(value s, value is224)
-{
-	val_check(s, string);
-	val_check(is224, bool);
-	value out = alloc_empty_string(32);
-	mbedtls_sha256(val_string(s), val_strlen(s), val_string(out), val_bool(is224));
-	return out;
-}
-
-DEFINE_PRIM(sha256_make, 2);
-
-value sha512_make(value s, value is384)
-{
-	val_check(s, string);
-	val_check(is384, bool);
-	value out = alloc_empty_string(64);
-	mbedtls_sha512(val_string(s), val_strlen(s), val_string(out), val_bool(is384));
-	return out;
-}
-
-DEFINE_PRIM(sha512_make, 2);
+CFFI_HASH_MAKE1(md5, 16);
+CFFI_HASH_MAKE1(sha1, 20);
+CFFI_HASH_MAKE2(sha256, 32, is224, 28);
+CFFI_HASH_MAKE2(sha512, 64, is384, 48);
 
