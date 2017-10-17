@@ -1,3 +1,4 @@
+import haxe.io.Bytes;
 using StringTools;
 
 class Main {
@@ -19,6 +20,12 @@ class Main {
 			buf.add('  ${k}: ${v.count} calls, ${Math.round(tcall*callScale.divisor)}${callScale.symbol}/call, ${Math.round(v.time*totalScale.divisor)}${totalScale.symbol} in total\n');
 		}
 		return buf.toString();
+	}
+
+	static function printGcStats()
+	{
+		var stats = neko.vm.Gc.stats();
+		return 'gc stats:\n  heap: ${stats.heap >> 10} KiB\n  free: ${stats.free >> 10} KiB\n';
 	}
 #end
 
@@ -51,24 +58,35 @@ class Main {
 
 #if instrument
 			runner.onComplete.add(function (_) trace(printTimers()));
+			runner.onComplete.add(function (_) trace(printGcStats()));
 #end
 			utest.ui.Report.create(runner);
 
 			runner.run();
 		case args if (args[0].endsWith("sum") && args.length > 1):
 			var algo = args[0].substr(0, args[0].indexOf("sum"));
-			var Impl:{ make:haxe.io.Bytes->haxe.io.Bytes } = cast Type.resolveClass('mbedtls.${algo.charAt(0).toUpperCase()}${algo.substr(1)}');
+			var Impl = Type.resolveClass('mbedtls.${algo.charAt(0).toUpperCase()}${algo.substr(1)}');
 			if (Impl == null) {
 				Sys.stderr().writeString('Could not find suitable implementation for $algo');
 				Sys.exit(1);
 			}
+			var bufsize = 1 << 20;
+			var buffer = Bytes.alloc(bufsize);
 			for (path in args.slice(1)) {
-				var bytes = sys.io.File.getBytes(path);
-				var hash = Impl.make(bytes);
+				var d:{ update:Bytes->Int->Void, finish:Void->Bytes } = Type.createInstance(Impl, []);
+				var f = sys.io.File.read(path, true);
+				while (true) {
+					var read = try f.readBytes(buffer, 0, bufsize) catch (e:haxe.io.Eof) -1;
+					if (read < 0)
+						break;
+					d.update(buffer, read);
+				}
+				var hash = d.finish();
 				Sys.stdout().writeString('${hash.toHex()}  $path\n');
 			}
 #if instrument
 			Sys.stderr().writeString(printTimers());
+			Sys.stderr().writeString(printGcStats());
 #end
 		case other:
 			Sys.stderr().writeString('Usage:\n  test.n\n  test.n sha256sum <path> [<path>...]\n');

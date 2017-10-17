@@ -22,8 +22,10 @@ class TestSha224 {
 				Sha224.encode("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"));
 		Assert.equals("c97ca9a559850ce97a04a96def6d99a9e0e0e2ab14e6b8df265fc0b3",
 				Sha224.encode("abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu"));
+		var millionAs = haxe.io.Bytes.alloc(1000000);
+		millionAs.fill(0, 1000000, "a".code);
 		Assert.equals("20794655980c91d8bbb4c1ea97618a4bf03f42581948b2ee4ee7ad67",
-				Sha224.encode([for (i in 0...1000000) "a"].join("")));
+				Sha224.encode(millionAs.toString()));
 	}
 
 	// https://www.cosic.esat.kuleuven.be/nessie/testvectors/hash/sha/
