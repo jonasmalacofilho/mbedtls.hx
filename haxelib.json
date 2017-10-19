@@ -6,7 +6,7 @@
     "description"  :  "Partial/future CFFI to the awesome mbed TLS",
     "version"      :  "0.0.9",
     "classPath"    :  "lib",
-    "releasenote"  :  "Add streaming hash APIS and documentation",
+    "releasenote"  :  "Add streaming hash APIs and documentation",
     "contributors" :  ["jonasmalacofilho", "protocubo"],
     "dependencies" :  {}
 }
