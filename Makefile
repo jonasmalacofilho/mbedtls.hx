@@ -66,10 +66,11 @@ $(LIB_NAME).zip: docs ALWAYS
 #
 
 clean: ALWAYS
-	rm -rf ndll
+	rm -rf ndll docs
+	rm -f doc.xml test.n
 
 dist-clean: clean ALWAYS
-	rm -f $(LIB_NAME).zip  # leave renamed packages behind
+	rm -f './$(LIB_NAME).zip'  # leave renamed packages behind
 
 #
 # cross compiling
