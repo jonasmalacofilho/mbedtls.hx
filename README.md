@@ -20,10 +20,10 @@ class Test {
     trace(mbedtls.Sha512.encode(fox));
 
     // or the streaming APIs to be able to process large ammounts of data
-    var buf = haxe.io.Bytes.alloc(1 << 20);                             // 1 MiB
+    var buf = haxe.io.Bytes.alloc(1 << 20);   // 1 MiB
     buf.fill(0, buf.length, "x".code);
     var hash = new mbedtls.Sha512();
-    for (i in 0...1024)                           // total data processed: 1 GiB
+    for (i in 0...1024)                       // total data processed: 1 GiB
       hash.update(buf, 0, buf.length);
     trace(hash.finish().toHex());
   }
