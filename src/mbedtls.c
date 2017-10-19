@@ -4,17 +4,8 @@
 #include "mbedtls/sha256.h"
 #include "mbedtls/sha512.h"
 
-#ifdef MBEDTLS_MD5_ALT
-#error "mbedtls.hx requires regular MD5 implementation from mbedTLS"
-#endif
-#ifdef MBEDTLS_SHA1_ALT
-#error "mbedtls.hx requires regular SHA1 implementation from mbedTLS"
-#endif
-#ifdef MBEDTLS_SHA256_ALT
-#error "mbedtls.hx requires regular SHA256 implementation from mbedTLS"
-#endif
-#ifdef MBEDTLS_SHA512_ALT
-#error "mbedtls.hx requires regular SHA512 implementation from mbedTLS"
+#if defined MBEDTLS_MD5_ALT || defined MBEDTLS_SHA1_ALT || MBEDTLS_SHA256_ALT || MBEDTLS_SHA512_ALT
+#error "mbedtls.hx requires regular MD5, SHA1, SHA256 and SHA512 hash implementations from mbedTLS"
 #endif
 
 #define VARIANT_ARG__md5
