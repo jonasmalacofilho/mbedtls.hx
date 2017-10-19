@@ -24,17 +24,20 @@
 	DEFINE_PRIM(VARIANT##_init, 0);
 
 #define CFFI_HASH_UPDATE(VARIANT, HASH) \
-	static value VARIANT##_update(value ctx, value s, value len) \
+	static value VARIANT##_update(value ctx, value s, value pos, value len) \
 	{ \
 		val_check_kind(ctx, k_##VARIANT); \
 		val_check(s, string); \
+		val_check(pos, int); \
 		val_check(len, int); \
-		if (val_int(len) < 0 || val_int(len) > val_strlen(s)) \
+		if (val_int(pos) < 0 || val_int(pos) > val_strlen(s)) \
+			val_throw(alloc_string("Outside bounds: pos")); \
+		if (val_int(len) < 0 || val_int(len) > val_strlen(s) - val_int(pos)) \
 			val_throw(alloc_string("Outside bounds: len")); \
-		mbedtls_##HASH##_update(val_data(ctx), val_string(s), val_int(len)); \
+		mbedtls_##HASH##_update(val_data(ctx), val_string(s) + val_int(pos), val_int(len)); \
 		return val_null; \
 	} \
-	DEFINE_PRIM(VARIANT##_update, 3);
+	DEFINE_PRIM(VARIANT##_update, 4);
 
 #define CFFI_HASH_FINISH(VARIANT, HASH, OUTPUTSIZE) \
 	static value VARIANT##_finish(value ctx) \

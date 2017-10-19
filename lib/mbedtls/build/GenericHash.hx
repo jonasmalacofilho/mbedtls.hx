@@ -19,7 +19,7 @@ class GenericHash {
 
 			static var _make:haxe.io.BytesData->haxe.io.BytesData = neko.Lib.load("mbedtls", $v{variant+"_make"}, 1);
 			static var _init:Void->$TCtx = neko.Lib.load("mbedtls", $v{variant+"_init"}, 0);
-			static var _update:$TCtx->haxe.io.BytesData->Int->Void = neko.Lib.load("mbedtls", $v{variant+"_update"}, 3);
+			static var _update:$TCtx->haxe.io.BytesData->Int->Int->Void = neko.Lib.load("mbedtls", $v{variant+"_update"}, 4);
 			static var _finish:$TCtx->haxe.io.BytesData = neko.Lib.load("mbedtls", $v{variant+"_finish"}, 1);
 
 			var ctx:$TCtx;
@@ -27,11 +27,11 @@ class GenericHash {
 			public function new()
 				ctx = _init();
 
-			public function update(b:haxe.io.Bytes, len:Int)
+			public function update(b:haxe.io.Bytes, pos:Int, len:Int)
 			{
 				if (ctx == null)
 					throw "Can't call `update()` after `finish()`";
-				_update(ctx, b.getData(), len);
+				_update(ctx, b.getData(), pos, len);
 			}
 
 			public function finish()

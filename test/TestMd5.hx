@@ -17,11 +17,12 @@ class TestMd5 {
 	public function testStreaming()
 	{
 		var text = "The quick brown fox jumps over the lazy dog";
+		var bytes = Bytes.ofString(text);
 		var digest = new Md5();
-		digest.update(Bytes.ofString(text), 17);
-		for (c in text.substr(17).split(""))
-			digest.update(Bytes.ofString(c), 1);
-		digest.update(Bytes.ofString(""), 0);
+		digest.update(bytes, 0, 17);
+		for (i in 17...text.length)
+			digest.update(bytes, i, 1);
+		digest.update(Bytes.ofString(""), 0, 0);
 		Assert.equals(Md5.encode(text), digest.finish().toHex());
 	}
 }

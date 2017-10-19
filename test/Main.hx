@@ -73,13 +73,13 @@ class Main {
 			var bufsize = 1 << 20;
 			var buffer = Bytes.alloc(bufsize);
 			for (path in args.slice(1)) {
-				var d:{ update:Bytes->Int->Void, finish:Void->Bytes } = Type.createInstance(Impl, []);
+				var d:{ update:Bytes->Int->Int->Void, finish:Void->Bytes } = Type.createInstance(Impl, []);
 				var f = sys.io.File.read(path, true);
 				while (true) {
 					var read = try f.readBytes(buffer, 0, bufsize) catch (e:haxe.io.Eof) -1;
 					if (read < 0)
 						break;
-					d.update(buffer, read);
+					d.update(buffer, 0, read);
 				}
 				var hash = d.finish();
 				Sys.stdout().writeString('${hash.toHex()}  $path\n');
