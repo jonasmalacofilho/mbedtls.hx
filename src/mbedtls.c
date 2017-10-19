@@ -29,6 +29,8 @@
 		val_check_kind(ctx, k_##VARIANT); \
 		val_check(s, string); \
 		val_check(len, int); \
+		if (val_int(len) < 0 || val_int(len) > val_strlen(s)) \
+			val_throw(alloc_string("Outside bounds: len")); \
 		mbedtls_##HASH##_update(val_data(ctx), val_string(s), val_int(len)); \
 		return val_null; \
 	} \
