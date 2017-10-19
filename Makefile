@@ -16,11 +16,12 @@ test.n: ALWAYS
 
 docs: ALWAYS
 	haxe -cp lib --macro "include('mbedtls')" -xml doc.xml -D doc-gen -neko noop --no-output
-	haxelib run dox -i doc.xml -o docs --include mbedtls --exclude mbedtls.build \
+	haxelib run dox -i doc.xml -o docs --toplevel-package mbedtls --exclude mbedtls.build \
 		--title 'mbedtls.hx / Haxe / API docs' \
 		-D themeColor 0x62BE5E \
 		-D source-path https://github.com/jonasmalacofilho/$(LIB_NAME).hx/tree/master/lib/
 	sed -i -e 's/expando/expand/' docs/nav.js
+	find docs -iname '*.html' -exec sed -i -e 's/top level/mbedtls root/' {} \;
 
 #
 # development settings

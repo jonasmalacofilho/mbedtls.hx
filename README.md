@@ -8,7 +8,7 @@ When possible, the Haxe APIs follow existing `std` counterparts, so that the lib
 
 Additionally, even more efficient (but lower-level) APIs are provided as well.
 
-For more information, check the [complete API documentation](https://jonasmalaco.com/mbedtls.hx/mbedtls/).
+For more information, check the [complete API documentation](https://jonasmalaco.com/mbedtls.hx).
 
 ```haxe
 // Test.hx
