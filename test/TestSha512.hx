@@ -51,5 +51,10 @@ class TestSha512 {
 		digest.update(Bytes.ofString(""), 0, 0);
 		Assert.equals(Sha512.encode(text), digest.finish().toHex());
 	}
+
+	public function testSelf()
+	{
+		Assert.equals(0, @:privateAccess Sha512._self_test(true));
+	}
 }
 

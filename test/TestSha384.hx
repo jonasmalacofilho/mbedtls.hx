@@ -51,5 +51,10 @@ class TestSha384 {
 		digest.update(Bytes.ofString(""), 0, 0);
 		Assert.equals(Sha384.encode(text), digest.finish().toHex());
 	}
+
+	public function testSelf()
+	{
+		Assert.equals(0, @:privateAccess Sha384._self_test(false));
+	}
 }
 

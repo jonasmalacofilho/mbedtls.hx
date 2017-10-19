@@ -64,14 +64,23 @@
 		mbedtls_##HASH(val_string(s), val_strlen(s), val_string(out) VARIANT_ARG(VARIANT)); \
 		return out; \
 	} \
-	DEFINE_PRIM(VARIANT##_make, 1); \
+	DEFINE_PRIM(VARIANT##_make, 1);
+
+#define CFFI_HASH_SELF_TEST(VARIANT, HASH) \
+	static value VARIANT##_self_test(value verbose) \
+	{ \
+		val_check(verbose, bool); \
+		return alloc_int(mbedtls_##HASH##_self_test(val_bool(verbose))); \
+	} \
+	DEFINE_PRIM(VARIANT##_self_test, 1);
 
 #define CFFI_HASH_BUILD(VARIANT, HASH, OUTPUTSIZE) \
 	DEFINE_KIND(k_##VARIANT); \
 	CFFI_HASH_INIT(VARIANT, HASH); \
 	CFFI_HASH_UPDATE(VARIANT, HASH); \
 	CFFI_HASH_FINISH(VARIANT, HASH, OUTPUTSIZE); \
-	CFFI_HASH_MAKE(VARIANT, HASH, OUTPUTSIZE);
+	CFFI_HASH_MAKE(VARIANT, HASH, OUTPUTSIZE); \
+	CFFI_HASH_SELF_TEST(VARIANT, HASH);
 
 CFFI_HASH_BUILD(md5, md5, 16);
 CFFI_HASH_BUILD(sha1, sha1, 20);

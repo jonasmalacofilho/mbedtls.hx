@@ -57,5 +57,10 @@ class TestSha256 {
 		digest.update(Bytes.ofString(""), 0, 0);
 		Assert.equals(Sha256.encode(text), digest.finish().toHex());
 	}
+
+	public function testSelf()
+	{
+		Assert.equals(0, @:privateAccess Sha256._self_test(true));
+	}
 }
 

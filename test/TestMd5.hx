@@ -25,5 +25,10 @@ class TestMd5 {
 		digest.update(Bytes.ofString(""), 0, 0);
 		Assert.equals(Md5.encode(text), digest.finish().toHex());
 	}
+
+	public function testSelf()
+	{
+		Assert.equals(0, @:privateAccess Md5._self_test(true));
+	}
 }
 
