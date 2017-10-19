@@ -11,7 +11,7 @@ test.n: ALWAYS
 	haxe test.hxml
 
 #
-# documention
+# documentation
 #
 
 docs: ALWAYS
