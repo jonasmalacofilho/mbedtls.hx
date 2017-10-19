@@ -55,6 +55,7 @@ class Main {
 			runner.addCase(new TestSha256());
 			runner.addCase(new TestSha384());
 			runner.addCase(new TestSha512());
+			runner.addCase(new TestExample());
 
 #if instrument
 			runner.onComplete.add(function (_) trace(printTimers()));

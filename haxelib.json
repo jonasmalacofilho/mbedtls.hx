@@ -4,9 +4,9 @@
     "license"      :  "BSD",
     "tags"         :  ["neko"],
     "description"  :  "Partial/future CFFI to the awesome mbed TLS",
-    "version"      :  "0.0.8",
+    "version"      :  "0.0.9",
     "classPath"    :  "lib",
-    "releasenote"  :  "Complete package metadata",
+    "releasenote"  :  "Add streaming hash APIS and documentation",
     "contributors" :  ["jonasmalacofilho", "protocubo"],
     "dependencies" :  {}
 }

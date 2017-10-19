@@ -6,16 +6,27 @@ _(or, for now, fast hash functions for Haxe/Neko)_
 
 When possible, the Haxe APIs follow existing `std` counterparts, so that the library can be a simple to adopt performance upgrade.
 
-Eventually, more efficient and/or lower-level APIs will be provided as well.
+Additionally, even more efficient (but lower-level) APIs are provided as well.
+
+For more information, check the [complete API documentation](https://jonasmalaco.com/mbedtls.hx/mbedtls/).
 
 ```haxe
 // Test.hx
 class Test {
-    static function main()
-    {
-        var fox = "The quick brown fox jumps over the lazy dog";
-        trace(mbedtls.Sha512.encode(fox));
-    }
+	static function main()
+	{
+		// use the haxe.crypto.* style APIs for convenience
+		var fox = "The quick brown fox jumps over the lazy dog";
+		trace(mbedtls.Sha512.encode(fox));
+
+		// or the streaming APIs to be able to process large ammounts of data
+		var buf = haxe.io.Bytes.alloc(1 << 20);  // 1 MiB
+		buf.fill(0, buf.length, "x".code);
+		var hash = new mbedtls.Sha512();
+		for (i in 0...1000)  // total data processed: 1 GiB
+			hash.update(buf, 0, buf.length);
+		trace(hash.finish().toHex());
+	}
 }
 ```
 
@@ -34,6 +45,7 @@ CFFI coverage:
 
  - [x] crypto hash functions: SHA2 family (SHA224, SHA256, SHA384, SHA512)
  - [x] other/older hash functions: MD5, SHA1
+ - [x] streaming hash APIs to process data in chunks
  - [ ] and more
 
 Build/package coverage:
@@ -48,6 +60,10 @@ Target coverage:
 
  - [x] Neko
  - [ ] C++/Hxcpp (help wanted)
+
+Other:
+
+ - [x] Documentation
 
 ## Original motivation
 

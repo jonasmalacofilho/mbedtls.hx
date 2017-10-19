@@ -56,7 +56,7 @@ ndll/L%/$(LIB_NAME).ndll: src/$(LIB_NAME).c
 # make a package with whatever ndlls have been built
 package: set-pkg unit-test ALWAYS
 
-$(LIB_NAME).zip: ALWAYS
+$(LIB_NAME).zip: docs ALWAYS
 	rm -f $@
 	zip -r $@ ./* -x '*.zip' -x '**/.*' -x '*.n'
 
