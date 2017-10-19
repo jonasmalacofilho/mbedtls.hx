@@ -15,8 +15,8 @@ test.n: ALWAYS
 #
 
 docs: ALWAYS
-	haxe -cp lib --macro "include('mbedtls')" -xml doc.xml -D doc-gen -neko noop --no-output
-	haxelib run dox -i doc.xml -o docs --toplevel-package mbedtls --exclude mbedtls.build \
+	haxe -cp lib --macro "include('mbedtls')" -xml haxedoc.xml -D doc-gen -neko noop --no-output
+	haxelib run dox -i haxedoc.xml -o docs --toplevel-package mbedtls --exclude mbedtls.build \
 		--title 'mbedtls.hx / Haxe / API docs' \
 		-D themeColor 0x62BE5E \
 		-D source-path https://github.com/jonasmalacofilho/$(LIB_NAME).hx/tree/master/lib/
@@ -67,7 +67,7 @@ $(LIB_NAME).zip: docs ALWAYS
 
 clean: ALWAYS
 	rm -rf ndll docs
-	rm -f doc.xml test.n
+	rm -f haxedoc.xml test.n
 
 dist-clean: clean ALWAYS
 	rm -f './$(LIB_NAME).zip'  # leave renamed packages behind
