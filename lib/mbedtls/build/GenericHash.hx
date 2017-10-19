@@ -2,7 +2,7 @@ package mbedtls.build;
 
 #if !macro
 @:autoBuild(mbedtls.build.GenericHash.build())
-class GenericHash {}
+interface GenericHash {}
 #else
 
 import haxe.macro.Context;
@@ -24,16 +24,33 @@ class GenericHash {
 
 			var ctx:$TCtx;
 
+			/**
+			Initialize and setup the hash function context
+			**/
 			public function new()
 				ctx = _init();
 
-			public function update(b:haxe.io.Bytes, pos:Int, len:Int)
+			/**
+			Process data from buffer
+
+			@param  bytes  Buffer with the data to process
+			@param  pos    Starting position to read from `bytes`
+			@param  len    Total length to read from `bytes`
+			**/
+			public function update(bytes:haxe.io.Bytes, pos:Int, len:Int)
 			{
 				if (ctx == null)
 					throw "Can't call `update()` after `finish()`";
-				_update(ctx, b.getData(), pos, len);
+				_update(ctx, bytes.getData(), pos, len);
 			}
 
+			/**
+			Compute the final digest
+
+			The context is cleared and no other methods can called after calling `finish()`.
+
+			@returns The resulting digest
+			**/
 			public function finish()
 			{
 				var o = _finish(ctx);
@@ -41,14 +58,33 @@ class GenericHash {
 				return haxe.io.Bytes.ofData(o);
 			}
 
-			public static function encode(s:String):String
-				return haxe.io.Bytes.ofData(_make(haxe.io.BytesData.ofString(s))).toHex();
-			public static function make(b:haxe.io.Bytes):haxe.io.Bytes
-				return haxe.io.Bytes.ofData(_make(b.getData()));
+			/**
+			Compute the hexadecimal digest of `string`
+
+			This method exists for convenience and to mirror the equivalent
+			`haxe.crypto.*` API.  However, it is not suited for large inputs.
+
+			@param  string  Entire data to be processed
+			@returns        A string containing the hexadecimal representation of the digest
+			**/
+			public static function encode(string:String):String
+				return haxe.io.Bytes.ofData(_make(haxe.io.BytesData.ofString(string))).toHex();
+
+			/**
+			Compute the digest of `bytes`
+
+			This method exists for convenience and to mirror the equivalent
+			`haxe.crypto.*` API.  However, it is not suited for large inputs.
+
+			@param  bytes  Entire data to be processed
+			@returns       The resulting digest
+			**/
+			public static function make(bytes:haxe.io.Bytes):haxe.io.Bytes
+				return haxe.io.Bytes.ofData(_make(bytes.getData()));
 
 		}
 		return Context.getBuildFields().concat(tmp.fields);
 	}
 }
-#end
 
+#end

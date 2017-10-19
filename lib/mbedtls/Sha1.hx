@@ -1,12 +1,11 @@
 package mbedtls;
 
-import haxe.io.BytesData;
-import haxe.io.Bytes;
-
-private abstract Sha1Context(Dynamic) {}
-
-/*
+/**
 SHA-1 Cryptographic Hash Function
-*/
-class Sha1 extends mbedtls.build.GenericHash {}
+
+Warning: SHA-1 is not considered secure anymore, for most applications.
+Consider using SHA-256 or SHA-512 instead (or their truncated variantes,
+SHA-224 or SHA-384).
+**/
+class Sha1 implements mbedtls.build.GenericHash {}
 

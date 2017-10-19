@@ -11,6 +11,14 @@ test.n: ALWAYS
 	haxe test.hxml
 
 #
+# documention
+#
+
+docs/doc.xml: ALWAYS
+	haxe -cp lib --macro "include('mbedtls')" -xml doc.xml -D doc-gen -neko noop --no-output
+	haxelib run dox -i doc.xml -o docs --include mbedtls --exclude mbedtls.build --title mbedtls.hx
+
+#
 # development settings
 #
 
@@ -65,7 +73,7 @@ dist-clean: clean ALWAYS
 dockcross-all: dockcross-linux-x64 dockcross-linux-x86 ALWAYS
 
 dockcross-linux-x%: ALWAYS
-	docs/$@ bash -c 'make __jessie-linux-x$*'
+	extra/$@ bash -c 'make __jessie-linux-x$*'
 
 #
 # DANGER ZONE

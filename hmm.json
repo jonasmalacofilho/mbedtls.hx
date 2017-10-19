@@ -1,6 +1,11 @@
 {
   "dependencies": [
     {
+      "name": "dox",
+      "type": "haxelib",
+      "version": null
+    },
+    {
       "name": "instrument",
       "type": "git",
       "dir": null,

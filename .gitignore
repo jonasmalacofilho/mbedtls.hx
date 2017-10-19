@@ -1,4 +1,5 @@
-*.n
-*.ndll
-*.zip
+/*.zip
+/doc.xml
+/ndll
+/test.n
 

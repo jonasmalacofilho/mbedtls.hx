@@ -1,12 +1,10 @@
 package mbedtls;
 
-import haxe.io.BytesData;
-import haxe.io.Bytes;
-
-private abstract Md5Context(Dynamic) {}
-
-/*
+/**
 MD5 Message Digest Algorithm
-*/
-class Md5 extends mbedtls.build.GenericHash {}
+
+Warning: MD5 is not considered secure anymore. For secure software, please use
+SHA-256 or SHA-512 instead (or their truncated variantes, SHA-224 or SHA-384).
+**/
+class Md5 implements mbedtls.build.GenericHash {}
 
